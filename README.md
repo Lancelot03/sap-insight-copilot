@@ -55,8 +55,6 @@ npm run dev
 - CAP API: `http://localhost:4004/odata/v4/insight/`
 - Frontend: `http://localhost:3000`
 
-- Demo chat (no API required): [Open local demo](http://localhost:3000/demo)
-
 ## Useful Commands
 
 ```bash
@@ -129,21 +127,3 @@ Run FI unit tests:
 ```bash
 node --test cap/tests/fi.test.js
 ```
-
-## Extended Project Structure
-
-This repository now includes additional enterprise-ready scaffolding:
-
-- `.github/workflows` (CI/Test/Deploy templates)
-- `.github/ISSUE_TEMPLATE` + PR template
-- `app/src/app/settings` page
-- `app/src/components` wrappers (`ChatWindow`, `MessageBubble`, `KPIWidget`, `Navbar`, `Sidebar`)
-- `app/src/services` (`api.ts`, `auth.ts`)
-- `app/src/lib` (`constants.ts`, `helpers.ts`)
-- `cap/db/sample-data.csv`
-- `cap/srv/router-service.js`, `cap/srv/auth-service.js`
-- `cap/tests/router.test.js`
-- `middleware/role-check.ts`, `middleware/validation.ts`
-- `utils/query-parser.ts`, `utils/logger.ts`, `utils/formatter.ts`
-- `docs/architecture.md`, `docs/api-contracts.md`, `docs/deployment-guide.md`, `docs/roadmap.md`
-- `scripts/deploy-btp.sh`, `scripts/seed-local.sh`
