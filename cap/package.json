@@ -1,0 +1,28 @@
+{
+  "name": "sap-insight-copilot-cap",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "cds watch",
+    "build": "cds build --production",
+    "start": "cds serve",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "@sap/cds": "^8.9.0",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^1.10.0"
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "url": "db.sqlite"
+        }
+      }
+    }
+  }
+}

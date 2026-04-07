@@ -1,0 +1,9 @@
+name: Deploy BTP
+on:
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Configure CF login + mbt build + cf deploy in this workflow"
