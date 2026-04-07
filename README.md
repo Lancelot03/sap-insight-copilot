@@ -55,8 +55,6 @@ npm run dev
 - CAP API: `http://localhost:4004/odata/v4/insight/`
 - Frontend: `http://localhost:3000`
 
-- Demo chat (no API required): [Open local demo](http://localhost:3000/demo)
-
 ## Useful Commands
 
 ```bash

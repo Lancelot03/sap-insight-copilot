@@ -17,10 +17,6 @@ type ChatApiResponse = {
   cards?: ResponseCard[]
 }
 
-type ChatWindowProps = {
-  demoMode?: boolean
-}
-
 const CHAT_API_URL = process.env.NEXT_PUBLIC_CHAT_API_URL ?? '/api/chat'
 
 function formatTime(date: Date): string {
@@ -30,46 +26,28 @@ function formatTime(date: Date): string {
   }).format(date)
 }
 
-function buildDemoReply(question: string): ChatApiResponse {
-  const q = question.toLowerCase()
-
-  if (q.includes('po') && q.includes('material')) {
-    return {
-      message: 'Demo mode: I routed this to MM getPOCount(material).',
-      cards: [
-        { title: 'Action', value: 'getPOCount' },
-        { title: 'Result', value: '2 POs' },
-      ],
-    }
-  }
-
-  if (q.includes('monthly') && q.includes('revenue')) {
-    return {
-      message: 'Demo mode: I routed this to FI getMonthlyRevenue().',
-      cards: [
-        { title: 'Jan 2026', value: '$20,500' },
-        { title: 'Feb 2026', value: '$11,900' },
-      ],
-    }
-  }
-
-  return {
-    message: 'Demo mode: Intent captured. This is a local mock response (no backend call).',
-    cards: [
-      { title: 'Status', value: 'Local Demo' },
-      { title: 'Connectivity', value: 'No API used' },
-    ],
-  }
+function typingCards(question: string): ResponseCard[] {
+  return [
+    {
+      title: 'Intent',
+      value: question.toLowerCase().includes('revenue') ? 'Revenue analytics' : 'Operational query',
+      subtitle: 'Auto-classified from prompt',
+    },
+    {
+      title: 'Status',
+      value: 'Ready',
+      subtitle: 'Connect /api/chat or CAP action endpoint',
+    },
+  ]
 }
 
-export function ChatWindow({ demoMode = false }: ChatWindowProps) {
+export function ChatWindow() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'welcome',
       role: 'assistant',
-      content: demoMode
-        ? 'Demo mode is enabled. Ask a question and I will respond with local mocked results without calling any API.'
-        : 'Hello! I am SAP Insight Copilot. Ask me about PO counts, spend, monthly revenue, due aging, or profit center performance.',
+      content:
+        'Hello! I am SAP Insight Copilot. Ask me about PO counts, spend, monthly revenue, due aging, or profit center performance.',
       createdAt: new Date(),
     },
   ])
@@ -94,13 +72,13 @@ export function ChatWindow({ demoMode = false }: ChatWindowProps) {
     setIsTyping(true)
 
     try {
-      const payload: ChatApiResponse = demoMode
-        ? buildDemoReply(question)
-        : await fetch(CHAT_API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ question }),
-          }).then((response) => response.json())
+      const response = await fetch(CHAT_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question }),
+      })
+
+      const payload = (await response.json()) as ChatApiResponse
 
       const assistantMessage: ChatMessage = {
         id: `a-${Date.now()}`,
@@ -117,18 +95,7 @@ export function ChatWindow({ demoMode = false }: ChatWindowProps) {
         role: 'assistant',
         content:
           'API endpoint is currently unavailable. I captured your question and prepared a local response card preview.',
-        cards: [
-          {
-            title: 'Intent',
-            value: question.toLowerCase().includes('revenue') ? 'Revenue analytics' : 'Operational query',
-            subtitle: 'Auto-classified from prompt',
-          },
-          {
-            title: 'Status',
-            value: 'Ready',
-            subtitle: 'Connect /api/chat or CAP action endpoint',
-          },
-        ],
+        cards: typingCards(question),
         createdAt: new Date(),
       }
       setMessages((prev) => [...prev, fallback])
@@ -142,11 +109,9 @@ export function ChatWindow({ demoMode = false }: ChatWindowProps) {
       <header className="mb-3 flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
         <div>
           <h1 className="text-base font-semibold text-slate-900 sm:text-lg">SAP Insight Copilot</h1>
-          <p className="text-xs text-slate-500">{demoMode ? 'Demo mode (no API)' : 'Enterprise assistant for MM and FI insights'}</p>
+          <p className="text-xs text-slate-500">Enterprise assistant for MM and FI insights</p>
         </div>
-        <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700">
-          {demoMode ? 'Demo' : 'Online'}
-        </span>
+        <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700">Online</span>
       </header>
 
       <div className="flex-1 space-y-3 overflow-y-auto rounded-xl border border-slate-200 bg-slate-100 p-3 sm:p-4">
