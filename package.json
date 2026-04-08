@@ -1,0 +1,26 @@
+{
+  "name": "sap-insight-copilot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SAP Insight Copilot monorepo with CAP backend and Next.js frontend",
+  "workspaces": [
+    "cap",
+    "app"
+  ],
+  "engines": {
+    "node": ">=20 <23"
+  },
+  "scripts": {
+    "install:all": "npm install --workspaces",
+    "dev": "concurrently -k -n CAP,WEB -c cyan,magenta \"npm run dev -w cap\" \"npm run dev -w app\"",
+    "dev:cap": "npm run dev -w cap",
+    "dev:app": "npm run dev -w app",
+    "build": "npm run build -w cap && npm run build -w app",
+    "start": "concurrently -k -n CAP,WEB -c cyan,magenta \"npm run start -w cap\" \"npm run start -w app\"",
+    "test:router": "node --test --experimental-strip-types tests/router.test.ts",
+    "test": "npm run test:router && node --test cap/tests/mm.test.js cap/tests/fi.test.js cap/tests/router.test.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
