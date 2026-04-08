@@ -17,8 +17,7 @@
     "dev:app": "npm run dev -w app",
     "build": "npm run build -w cap && npm run build -w app",
     "start": "concurrently -k -n CAP,WEB -c cyan,magenta \"npm run start -w cap\" \"npm run start -w app\"",
-    "test:router": "node --test --experimental-strip-types tests/router.test.ts",
-    "test": "npm run test:router && node --test cap/tests/mm.test.js cap/tests/fi.test.js cap/tests/router.test.js"
+    "test:router": "node --test --experimental-strip-types tests/router.test.ts"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

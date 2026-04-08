@@ -20,3 +20,4 @@
 - GET `/odata/v4/fi/getTopProfitCenters()`
 - GET `/odata/v4/fi/getReceivablesAging()`
 - GET `/odata/v4/fi/getPayablesAging()`
+See `cap/srv/*-service.cds` for MM/FI/Joule OData contracts.

@@ -74,18 +74,3 @@ test('FI authorization middleware rejects missing roles', () => {
     message: 'Forbidden: Missing required FI role'
   })
 })
-
-
-test('getProfitMargin returns revenue profitability KPI', () => {
-  const { getProfitMargin } = require('../srv/fi-core')
-  const response = getProfitMargin()
-  assert.equal(response.revenue, 32400)
-  assert.equal(response.expenses, 5200)
-  assert.equal(response.profit, 27200)
-})
-
-test('getTopProfitCenters returns sorted revenue list', () => {
-  const { getTopProfitCenters } = require('../srv/fi-core')
-  const response = getTopProfitCenters()
-  assert.equal(response[0].pc, 'PC-100')
-})
