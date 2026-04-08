@@ -2,10 +2,10 @@ const CURRENCY = 'USD'
 const ALLOWED_INPUT = /^[A-Za-z0-9_\-./]+$/
 
 const samplePurchaseOrders = [
-  { poNumber: '4500000010', material: 'MAT-1000', vendor: 'VEND-001', plant: 'PL01', netValue: 1200.5, status: 'OPEN', month: '2026-01' },
-  { poNumber: '4500000011', material: 'MAT-1000', vendor: 'VEND-002', plant: 'PL01', netValue: 500.0, status: 'CLOSED', month: '2026-01' },
-  { poNumber: '4500000012', material: 'MAT-2000', vendor: 'VEND-001', plant: 'PL02', netValue: 850.75, status: 'OPEN', month: '2026-02' },
-  { poNumber: '4500000013', material: 'MAT-3000', vendor: 'VEND-003', plant: 'PL03', netValue: 980.0, status: 'OPEN', month: '2026-02' }
+  { poNumber: '4500000010', material: 'MAT-1000', vendor: 'VEND-001', plant: 'PL01', netValue: 1200.5 },
+  { poNumber: '4500000011', material: 'MAT-1000', vendor: 'VEND-002', plant: 'PL01', netValue: 500.0 },
+  { poNumber: '4500000012', material: 'MAT-2000', vendor: 'VEND-001', plant: 'PL02', netValue: 850.75 },
+  { poNumber: '4500000013', material: 'MAT-3000', vendor: 'VEND-003', plant: 'PL03', netValue: 980.0 }
 ]
 
 function normalize(input) {
@@ -101,49 +101,6 @@ function getGeneralPO(orders = samplePurchaseOrders) {
   }
 }
 
-function getOpenPOs(orders = samplePurchaseOrders) {
-  const openPOs = orders.filter((po) => normalize(po.status) === 'OPEN')
-  return {
-    openPOCount: openPOs.length,
-    openPOSpend: aggregateTotal(openPOs),
-    currency: CURRENCY
-  }
-}
-
-function getTopVendors(limit = 3, orders = samplePurchaseOrders) {
-  const parsedLimit = Math.max(1, Number(limit) || 3)
-  const grouped = new Map()
-  for (const order of orders) {
-    const key = normalize(order.vendor)
-    grouped.set(key, (grouped.get(key) || 0) + Number(order.netValue))
-  }
-  return [...grouped.entries()]
-    .map(([vendor, spend]) => ({ vendor, spend: Number(spend.toFixed(2)), currency: CURRENCY }))
-    .sort((a, b) => b.spend - a.spend)
-    .slice(0, parsedLimit)
-}
-
-function getPlantSpend(plant, orders = samplePurchaseOrders) {
-  const normalizedPlant = validateKey(plant, 'plant')
-  const records = orders.filter((po) => normalize(po.plant) === normalizedPlant)
-  return {
-    plant: normalizedPlant,
-    spend: aggregateTotal(records),
-    currency: CURRENCY
-  }
-}
-
-function getMonthlyPOTrend(month, orders = samplePurchaseOrders) {
-  const normalizedMonth = validateKey(month, 'month')
-  const records = orders.filter((po) => normalize(po.month) === normalizedMonth)
-  return {
-    month: normalizedMonth,
-    poCount: records.length,
-    totalSpend: aggregateTotal(records),
-    currency: CURRENCY
-  }
-}
-
 module.exports = {
   samplePurchaseOrders,
   validateKey,
@@ -152,9 +109,5 @@ module.exports = {
   getMaterialSpend,
   getVendorSpend,
   getPlantPO,
-  getGeneralPO,
-  getOpenPOs,
-  getTopVendors,
-  getPlantSpend,
-  getMonthlyPOTrend
+  getGeneralPO
 }

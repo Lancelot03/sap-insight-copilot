@@ -41,6 +41,26 @@ function getMonthKey(dateStr) {
   return dateStr.slice(0, 7)
 }
 
+function getMonthlyRevenue(records = sampleFinancePostings) {
+  const revenueRows = records.filter((r) => r.postingType === 'RV')
+  const grouped = new Map()
+
+  for (const row of revenueRows) {
+    const key = getMonthKey(row.postingDate)
+    grouped.set(key, (grouped.get(key) || 0) + Number(row.amount))
+  }
+
+  const monthly = [...grouped.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([month, revenue]) => ({ month, revenue: Number(revenue.toFixed(2)), currency: CURRENCY }))
+
+  return {
+    monthly,
+    totalRevenue: aggregateAmount(revenueRows),
+    currency: CURRENCY
+  }
+}
+
 function dueAging(records, asOfDate) {
   const buckets = { current: 0, due1To30: 0, due31To60: 0, due61Plus: 0 }
 
@@ -59,26 +79,6 @@ function dueAging(records, asOfDate) {
     due1To30: Number(buckets.due1To30.toFixed(2)),
     due31To60: Number(buckets.due31To60.toFixed(2)),
     due61Plus: Number(buckets.due61Plus.toFixed(2))
-  }
-}
-
-function getMonthlyRevenue(records = sampleFinancePostings) {
-  const revenueRows = records.filter((r) => r.postingType === 'RV')
-  const grouped = new Map()
-
-  for (const row of revenueRows) {
-    const key = getMonthKey(row.postingDate)
-    grouped.set(key, (grouped.get(key) || 0) + Number(row.amount))
-  }
-
-  const monthly = [...grouped.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([month, revenue]) => ({ month, revenue: Number(revenue.toFixed(2)), currency: CURRENCY }))
-
-  return {
-    monthly,
-    totalRevenue: aggregateAmount(revenueRows),
-    currency: CURRENCY
   }
 }
 
@@ -133,40 +133,6 @@ function getProfitCenterRevenue(pc, records = sampleFinancePostings) {
   }
 }
 
-function getProfitMargin(records = sampleFinancePostings) {
-  const revenue = aggregateAmount(records.filter((r) => r.postingType === 'RV'))
-  const expenses = aggregateAmount(records.filter((r) => r.postingType === 'AP'))
-  const margin = revenue - expenses
-  return {
-    revenue,
-    expenses,
-    profit: Number(margin.toFixed(2)),
-    marginPercent: revenue ? Number(((margin / revenue) * 100).toFixed(2)) : 0,
-    currency: CURRENCY
-  }
-}
-
-function getTopProfitCenters(records = sampleFinancePostings) {
-  const grouped = new Map()
-  for (const row of records.filter((r) => r.postingType === 'RV')) {
-    const key = normalize(row.profitCenter)
-    grouped.set(key, (grouped.get(key) || 0) + Number(row.amount))
-  }
-
-  return [...grouped.entries()]
-    .map(([pc, revenue]) => ({ pc, revenue: Number(revenue.toFixed(2)), currency: CURRENCY }))
-    .sort((a, b) => b.revenue - a.revenue)
-}
-
-function getReceivablesAging(records = sampleFinancePostings, asOf = new Date()) {
-  const receivables = records.filter((r) => r.postingType === 'AR' && r.status === 'OPEN')
-  return { ...dueAging(receivables, asOf), total: aggregateAmount(receivables), currency: CURRENCY }
-}
-
-function getPayablesAging(records = sampleFinancePostings, asOf = new Date()) {
-  const payables = records.filter((r) => r.postingType === 'AP' && r.status === 'OPEN')
-  return { ...dueAging(payables, asOf), total: aggregateAmount(payables), currency: CURRENCY }
-}
 
 function enforceRole(req, roles = ['FI_VIEWER', 'FI_ADMIN']) {
   if (!req.user || typeof req.user.is !== 'function') {
@@ -189,9 +155,5 @@ module.exports = {
   getVendorDue,
   getCustomerDue,
   getProfitCenterRevenue,
-  getProfitMargin,
-  getTopProfitCenters,
-  getReceivablesAging,
-  getPayablesAging,
   enforceRole
 }

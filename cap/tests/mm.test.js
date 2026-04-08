@@ -84,18 +84,3 @@ test('enforceRole rejects unauthorized users', () => {
     message: 'Forbidden: Missing required MM role'
   })
 })
-
-
-test('getOpenPOs returns count and spend for open POs', () => {
-  const { getOpenPOs } = require('../srv/mm-core')
-  const response = getOpenPOs()
-  assert.equal(response.openPOCount, 3)
-  assert.equal(response.openPOSpend, 3031.25)
-})
-
-test('getTopVendors returns ranked vendors', () => {
-  const { getTopVendors } = require('../srv/mm-core')
-  const response = getTopVendors(2)
-  assert.equal(response.length, 2)
-  assert.equal(response[0].vendor, 'VEND-001')
-})

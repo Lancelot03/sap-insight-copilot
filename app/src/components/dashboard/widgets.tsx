@@ -127,8 +127,8 @@ export function DashboardWidgets() {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard label="PO Count KPI" value={data.poCount} hint="Material MAT-1000" />
         <KpiCard label="Monthly Revenue" value={`$${revenueTotal}`} hint="Aggregated from FI API" />
-        <KpiCard label="Vendor Due" value="$3,400" hint="Open AP for VEND-001" />
-        <KpiCard label="Profit Center Revenue" value="$20,500" hint="PC-100 top performer" />
+        <KpiCard label="Top Vendor" value={data.vendorSpend[0]?.vendor ?? '-'} hint="By spend" />
+        <KpiCard label="Top Profit Center" value={data.profitCenterRevenue[0]?.pc ?? '-'} hint="By revenue" />
       </div>
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">

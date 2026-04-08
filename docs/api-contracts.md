@@ -20,7 +20,4 @@
 - GET `/odata/v4/fi/getTopProfitCenters()`
 - GET `/odata/v4/fi/getReceivablesAging()`
 - GET `/odata/v4/fi/getPayablesAging()`
-
-## Generic examples
-- GET /odata/v4/mm/getPOCount(material)
-- GET /odata/v4/fi/getMonthlyRevenue()
+See `cap/srv/*-service.cds` for MM/FI/Joule OData contracts.
