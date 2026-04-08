@@ -26,6 +26,39 @@ function formatTime(date: Date): string {
   }).format(date)
 }
 
+function buildDemoReply(question: string): ChatApiResponse {
+  const q = question.toLowerCase()
+
+  if (q.includes('po') && q.includes('material')) {
+    return {
+      message: 'Demo mode: I routed this to MM getPOCount(material).',
+      cards: [
+        { title: 'Action', value: 'getPOCount' },
+        { title: 'Result', value: '2 POs' },
+      ],
+    }
+  }
+
+  if (q.includes('monthly') && q.includes('revenue')) {
+    return {
+      message: 'Demo mode: I routed this to FI getMonthlyRevenue().',
+      cards: [
+        { title: 'Jan 2026', value: '$20,500' },
+        { title: 'Feb 2026', value: '$11,900' },
+      ],
+    }
+  }
+
+  return {
+    message: 'Demo mode: Intent captured. This is a local mock response (no backend call).',
+    cards: [
+      { title: 'Status', value: 'Local Demo' },
+      { title: 'Connectivity', value: 'No API used' },
+    ],
+  }
+}
+
+export function ChatWindow({ demoMode = false }: ChatWindowProps) {
 function typingCards(question: string): ResponseCard[] {
   return [
     {

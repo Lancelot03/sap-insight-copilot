@@ -55,6 +55,8 @@ npm run dev
 - CAP API: `http://localhost:4004/odata/v4/insight/`
 - Frontend: `http://localhost:3000`
 
+- Demo chat (no API required): [Open local demo](http://localhost:3000/demo)
+
 ## Useful Commands
 
 ```bash
@@ -127,3 +129,56 @@ Run FI unit tests:
 ```bash
 node --test cap/tests/fi.test.js
 ```
+
+## Extended Project Structure
+
+This repository now includes additional enterprise-ready scaffolding:
+
+- `.github/workflows` (CI/Test/Deploy templates)
+- `.github/ISSUE_TEMPLATE` + PR template
+- `app/src/app/settings` page
+- `app/src/components` wrappers (`ChatWindow`, `MessageBubble`, `KPIWidget`, `Navbar`, `Sidebar`)
+- `app/src/services` (`api.ts`, `auth.ts`)
+- `app/src/lib` (`constants.ts`, `helpers.ts`)
+- `cap/db/sample-data.csv`
+- `cap/srv/router-service.js`, `cap/srv/auth-service.js`
+- `cap/tests/router.test.js`
+- `middleware/role-check.ts`, `middleware/validation.ts`
+- `utils/query-parser.ts`, `utils/logger.ts`, `utils/formatter.ts`
+- `docs/architecture.md`, `docs/api-contracts.md`, `docs/deployment-guide.md`, `docs/roadmap.md`
+- `scripts/deploy-btp.sh`, `scripts/seed-local.sh`
+
+## Architecture Diagram
+
+`UI → CAP Router → MM/FI Services → CDS OData → S/4HANA Cloud`
+
+## Screenshots
+
+- Chat UI: `/chat`
+- Dashboard UI: `/dashboard`
+- Demo (no API): `/demo`
+
+## Feature Roadmap
+
+- Sprint 1: Bootstrap CAP + Next.js + BTP scaffolding
+- Sprint 2: MM APIs + authorization
+- Sprint 3: FI APIs + analytics
+- Sprint 4+: Joule/S4 deep integration and observability
+
+## Future Scope
+
+- Live S/4HANA Cloud connectivity
+- Streaming responses in chat
+- Multi-tenant authorization matrix
+- SAP Event Mesh integration
+
+## Joule Integration
+
+See [`docs/joule-integration.md`](docs/joule-integration.md) for end-to-end Joule routing architecture.
+
+## Deployment Steps
+
+1. `npm install`
+2. `npm run build`
+3. `mbt build -t .mta_archives`
+4. `cf deploy .mta_archives/sap-insight-copilot_1.0.0.mtar`
